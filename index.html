@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>OpenStreetMap</title>
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular.leaflet.directive.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/leaflet.css">
+
+
+    <link rel="stylesheet" href="css/MarkerCluster.css" />
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+    <script src="js/leaflet.markercluster-src.js"></script>
+
+    <script>
+
+
+        /*var app = angular.module("demoapp", ['leaflet-directive']);
+        app.controller("DemoController", [ "$scope", function ($scope) {
+            // Nothing here!
+        }]);
+
+        app.controller("SimpleMapController", [ '$scope', function($scope) {
+            angular.extend($scope, {
+                defaults: {
+                    scrollWheelZoom: false
+                }
+            });
+        }]);
+
+        app.controller("MarkerController", [ '$scope', function($scope) {
+            angular.extend($scope, {
+                myLoc: {
+                    lat: 18.499286123071684,
+                    lng: 73.82187130595707,
+                    zoom: 12
+                },
+                markers: {
+                    myLoc1Marker: {
+                        lat: 18.499286123071684,
+                        lng: 73.82187130595707,
+                        message: "You are here!",
+                        focus: true,
+                        draggable: false
+                    },
+                    myLoc2Marker: {
+                        lat: 18.66,
+                        lng: 73.87,
+                        message: "Your destination!",
+                        focus: true,
+                        draggable: false
+                    }
+                },
+                legend: {
+                    position: 'bottomleft',
+                    colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
+                    labels: [ 'Route 1', 'Route 2', 'Route 3', 'Route 4' ]
+                },
+                defaults: {
+                    scrollWheelZoom: false
+                }
+            });
+        }]);*/
+    </script>
+</head>
+<!--<body>
+<div ng-controller="MarkerController" >
+    <leaflet class="center-block middle-block" markers="markers" legend="legend" center="myLoc" class="legend"></leaflet>
+</div>
+</body>-->
+
+<body>
+
+<div class="center-block" ng-controller="SimpleMapController"  id="map">
+</div>
+
+<script type="text/javascript">
+
+    var app = angular.module("demoapp", ['leaflet-directive']);
+
+    app.controller("SimpleMapController", [ '$scope', function($scope) {
+        var geoJsonData = {
+            "type": "FeatureCollection",
+            "features": [
+                { "type": "Feature", "id":"1", "properties": { "address": "2"   }, "geometry": { "type": "Point", "coordinates": [73.8154678547362,18.503850090969372 ] } },
+                { "type": "Feature", "id":"2", "properties": { "address": "151" }, "geometry": { "type": "Point", "coordinates": [73.82165839314257,18.499279279482558] } },
+                { "type": "Feature", "id":"3", "properties": { "address": "21"  }, "geometry": { "type": "Point", "coordinates": [73.80903055310046,18.503687304008047] } },
+                { "type": "Feature", "id":"4", "properties": { "address": "14"  }, "geometry": { "type": "Point", "coordinates": [73.81194879650866,18.503687304008067] } },
+                { "type": "Feature", "id":"5", "properties": { "address": "38B" }, "geometry": { "type": "Point", "coordinates": [73.81246378063952,18.502710578989557] } },
+                { "type": "Feature", "id":"6", "properties": { "address": "38"  }, "geometry": { "type": "Point", "coordinates": [73.81375124096667,18.501896637217754] } },
+                { "type": "Feature", "id":"7", "properties": { "address": "2"   }, "geometry": { "type": "Point", "coordinates": [73.81469537853991,18.50246639686432] } },
+                { "type": "Feature", "id":"8", "properties": { "address": "151" }, "geometry": { "type": "Point", "coordinates": [73.81469537853991,18.50165245393169] } },
+                { "type": "Feature", "id":"9", "properties": { "address": "21"  }, "geometry": { "type": "Point", "coordinates": [73.81512453198229,18.505722129899194] } },
+                { "type": "Feature", "id":"10", "properties": { "address": "14"  }, "geometry": { "type": "Point", "coordinates": [73.81735612988268,18.505722129899199] } },
+                { "type": "Feature", "id":"11", "properties": { "address": "38B" }, "geometry": { "type": "Point", "coordinates": [73.81205608486925,18.505193077494233] } },
+                { "type": "Feature", "id":"12", "properties": { "address": "38"  }, "geometry": { "type": "Point", "coordinates": [73.81267835736071,18.504073922788482] } },
+                { "type": "Feature", "id":"13", "properties": { "address": "2"   }, "geometry": { "type": "Point", "coordinates": [73.81207754254137,18.502507093909372] } },
+                { "type": "Feature", "id":"14", "properties": { "address": "151" }, "geometry": { "type": "Point", "coordinates": [73.81364395260607,18.498416992517356] } },
+                { "type": "Feature", "id":"15", "properties": { "address": "21"  }, "geometry": { "type": "Point", "coordinates": [73.81182005047594,18.495323915650165] } },
+                { "type": "Feature", "id":"16", "properties": { "address": "14"  }, "geometry": { "type": "Point", "coordinates": [73.81091882824694,18.49540531312546] } },
+                { "type": "Feature", "id":"17", "properties": { "address": "38B" }, "geometry": { "type": "Point", "coordinates": [73.8099746906737,18.49573090263986] } },
+                { "type": "Feature", "id":"18", "properties": { "address": "38"  }, "geometry": { "type": "Point", "coordinates": [73.82188369869982,18.499291997546894] } }
+            ]
+        };
+
+        var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        var map = L.map('map')
+                .addLayer(tiles);
+
+        var markers = L.markerClusterGroup();
+
+        var geoJsonLayer = L.geoJson(geoJsonData, {
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.address);
+            }
+        });
+        markers.addLayer(geoJsonLayer);
+
+        map.addLayer(markers);
+        map.fitBounds(markers.getBounds());
+
+    }]);
+
+
+</script>
+</body>
+
+</html>
